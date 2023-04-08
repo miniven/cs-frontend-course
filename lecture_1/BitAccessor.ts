@@ -7,6 +7,12 @@ class BitAccessor {
 		this.array = array;
 	}
 
+	/**
+	 * Валидирует позиции элемента массива и его бита
+	 * 
+	 * @param elementIndex Индекс элемента массива
+	 * @param bitIndex Индекс конкретного бита элемента
+	 */
 	private validate(elementIndex: number, bitIndex: number) {
 		if (this.array[elementIndex] === undefined) {
 			throw new Error('Invalid element position');
@@ -17,12 +23,26 @@ class BitAccessor {
 		}
 	}
 
+	/**
+	 * Возвращает значение бита по индексу у указанного элемента массива
+	 * 
+	 * @param elementIndex Индекс элемента массива
+	 * @param bitIndex Индекс конкретного бита элемента
+	 * @returns Бит по искомому индексу
+	 */
 	get(elementIndex: number, bitIndex: number): number | void {
 		this.validate(elementIndex, bitIndex);
 
 		return (this.array[elementIndex] & (1 << bitIndex)) === 0 ? 0 : 1;
 	}
 
+	/**
+	 * Устанавливает значение бита по индексу у указанного элемента массива
+	 * 
+	 * @param elementIndex Индекс элемента массива
+	 * @param bitIndex Индекс конкретного бита элемента
+	 * @param value Новое значение бита
+	 */
 	set(elementIndex: number, bitIndex: number, value: 1 | 0): void {
 		this.validate(elementIndex, bitIndex);
 
