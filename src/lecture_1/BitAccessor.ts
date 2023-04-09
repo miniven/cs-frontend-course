@@ -1,10 +1,10 @@
 class BitAccessor {
 	static BYTE_SIZE = 8;
 
-	private array: Uint8Array;
+	#array: Uint8Array;
 
 	constructor(array: Uint8Array) {
-		this.array = array;
+		this.#array = array;
 	}
 
 	/**
@@ -14,11 +14,11 @@ class BitAccessor {
 	 * @param bitIndex Индекс конкретного бита элемента
 	 */
 	private assertPositions(elementIndex: number, bitIndex: number) {
-		if (this.array[elementIndex] === undefined) {
+		if (this.#array[elementIndex] === undefined) {
 			throw new Error('Invalid element position');
 		}
 
-		if (bitIndex >= this.array.BYTES_PER_ELEMENT * BitAccessor.BYTE_SIZE || bitIndex < 0) {
+		if (bitIndex >= this.#array.BYTES_PER_ELEMENT * BitAccessor.BYTE_SIZE || bitIndex < 0) {
 			throw new Error('Invalid bit position');
 		}
 	}
@@ -33,7 +33,7 @@ class BitAccessor {
 	get(elementIndex: number, bitIndex: number): number | void {
 		this.assertPositions(elementIndex, bitIndex);
 
-		return (this.array[elementIndex] & (1 << bitIndex)) === 0 ? 0 : 1;
+		return (this.#array[elementIndex] & (1 << bitIndex)) === 0 ? 0 : 1;
 	}
 
 	/**
@@ -47,11 +47,11 @@ class BitAccessor {
 		this.assertPositions(elementIndex, bitIndex);
 
 		if (value === 0) {
-			this.array[elementIndex] = this.array[elementIndex] & ~(1 << bitIndex);
+			this.#array[elementIndex] = this.#array[elementIndex] & ~(1 << bitIndex);
 		}
 
 		if (value === 1) {
-			this.array[elementIndex] = this.array[elementIndex] | (1 << bitIndex);
+			this.#array[elementIndex] = this.#array[elementIndex] | (1 << bitIndex);
 		}
 	}
 }
