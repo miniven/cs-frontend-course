@@ -1,9 +1,9 @@
 class BitAccessor {
 	static BYTE_SIZE = 8;
 
-	#array: Uint8Array;
+	#array: Uint8Array | Uint16Array | Uint32Array;
 
-	constructor(array: Uint8Array) {
+	constructor(array: Uint8Array | Uint16Array | Uint32Array) {
 		this.#array = array;
 	}
 
@@ -56,6 +56,6 @@ class BitAccessor {
 	}
 }
 
-export const createBitAccessor = (array: Uint8Array): BitAccessor => {
+export const createBitAccessor = (array: Uint8Array | Uint16Array | Uint32Array): BitAccessor => {
 	return new BitAccessor(array);
 }
