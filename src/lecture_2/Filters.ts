@@ -29,7 +29,7 @@ function withImagePathSupport(filter: (canvas: HTMLCanvasElement) => HTMLCanvasE
  * @param canvas Целевой canvas-элемент, в котором будет происходить рендер изображения
  * @returns canvas-элемент, над которым работала функция
  */
-function renderToCanvas(image: HTMLImageElement, canvas = document.querySelector<HTMLCanvasElement>('.canvas')) {
+function renderToCanvas(image: HTMLImageElement, canvas = document.querySelector<HTMLCanvasElement>('.js-canvas')) {
 	if (canvas) {
 		const context = canvas.getContext('2d');
 
@@ -55,8 +55,14 @@ function fetchImage(path: string) {
 
 			resolve(image);
 		};
+		const errorHandler = () => {
+			image.removeEventListener("error", errorHandler);
+
+			reject('Image was not found');
+		}
 		
 		image.addEventListener("load", loadHandler);
+		image.addEventListener("error", errorHandler);
 	
 		image.src = path;
 	})
@@ -74,9 +80,8 @@ function createCanvasFilter(filter: (channels: Uint8ClampedArray) => void) {
 	
 		if (context) {
 			const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-			const channels = imageData.data;
 	
-			filter(channels);
+			filter(imageData.data);
 	
 			context.putImageData(imageData, 0, 0);
 		}
@@ -86,7 +91,7 @@ function createCanvasFilter(filter: (channels: Uint8ClampedArray) => void) {
 };
 
 /**
- * Применяет фильтр инверсии цветов к изображению
+ * Применяет эффект инверсии цветов к изображению
  * 
  * @param pathOrCanvas Путь до изображения, которому суждено быть отрисованным в canvas, либо сам canvas
  * @returns canvas-элемент, к которому был применён фильтр
@@ -100,7 +105,7 @@ export const inverse = createCanvasFilter((channels: Uint8ClampedArray) => {
 });
 
 /**
- * Применяет монохромный фильтр к изображению
+ * Применяет чёрно-белый эффект к изображению
  * 
  * @param pathOrCanvas Путь до изображения, которому суждено быть отрисованным в canvas, либо сам canvas
  * @returns canvas-элемент, к которому был применён фильтр
@@ -115,3 +120,10 @@ export const grayscale = createCanvasFilter((channels: Uint8ClampedArray) => {
 	}
 });
 
+/**
+ * Трансформирует изображение в canvas
+ * 
+ * @param pathOrCanvas Путь до изображения, которому суждено быть отрисованным в canvas, либо сам canvas
+ * @returns canvas-элемент
+ */
+export const transformImageToCanvas = withImagePathSupport((canvas) => canvas);
