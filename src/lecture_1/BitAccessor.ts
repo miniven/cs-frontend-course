@@ -1,4 +1,4 @@
-class BitAccessor {
+export class BitAccessor {
 	static BYTE_SIZE = 8;
 
 	#array: Uint8Array | Uint16Array | Uint32Array;
@@ -9,7 +9,7 @@ class BitAccessor {
 
 	/**
 	 * Валидирует позиции элемента массива и его бита
-	 * 
+	 *
 	 * @param elementIndex Индекс элемента массива
 	 * @param bitIndex Индекс конкретного бита элемента
 	 */
@@ -25,7 +25,7 @@ class BitAccessor {
 
 	/**
 	 * Возвращает значение бита по индексу у указанного элемента массива
-	 * 
+	 *
 	 * @param elementIndex Индекс элемента массива
 	 * @param bitIndex Индекс конкретного бита элемента
 	 * @returns Бит по искомому индексу
@@ -38,7 +38,7 @@ class BitAccessor {
 
 	/**
 	 * Устанавливает значение бита по индексу у указанного элемента массива
-	 * 
+	 *
 	 * @param elementIndex Индекс элемента массива
 	 * @param bitIndex Индекс конкретного бита элемента
 	 * @param value Новое значение бита
@@ -58,4 +58,4 @@ class BitAccessor {
 
 export const createBitAccessor = (array: Uint8Array | Uint16Array | Uint32Array): BitAccessor => {
 	return new BitAccessor(array);
-}
+};
