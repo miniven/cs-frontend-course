@@ -30,7 +30,7 @@ export class BitAccessor {
 	 * @param bitIndex Индекс конкретного бита элемента
 	 * @returns Бит по искомому индексу
 	 */
-	get(elementIndex: number, bitIndex: number): number | void {
+	get(elementIndex: number, bitIndex: number): 1 | 0 | void {
 		this.assertPositions(elementIndex, bitIndex);
 
 		return (this.#array[elementIndex] & (1 << bitIndex)) === 0 ? 0 : 1;

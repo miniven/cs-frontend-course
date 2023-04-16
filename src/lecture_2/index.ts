@@ -1,5 +1,7 @@
 import { inverse, grayscale, transformImageToCanvas } from './filters';
-import { encode } from './encode';
+import { decode, encode } from './encode';
+
+import type { TSchema } from './encode/types';
 
 const grayscaleButton = document.querySelector('.js-filter-button-grayscale');
 const inverseButton = document.querySelector('.js-filter-button-inverse');
@@ -16,19 +18,25 @@ const inverseButton = document.querySelector('.js-filter-button-inverse');
 	});
 })();
 
-const data = encode(
-	[7, 3, true, 3, 'ab'],
-	[
-		[3, 'number'],
-		[2, 'number'],
-		[1, 'boolean'],
-		[2, 'number'],
-		[16, 'ascii'],
-	]
-);
+const schema: TSchema = [
+	[3, 'number'],
+	[2, 'number'],
+	[1, 'boolean'],
+	[2, 'number'],
+	[16, 'ascii'],
+];
+
+const data = encode([7, 3, true, 3, 'ab'], schema);
 
 /**
  * Тут я ожидаю, что увижу ArrayBuffer с тремя байтами:
  * 255 (биты первых четырёх значений), 97 (первый символ строки) и 98 (второй символ строки)
  */
 console.log(data);
+
+const originalData = decode(data, schema);
+
+/**
+ * Тут ожидаю увидеть массив [7, 3, true, 3, 'ab']
+ */
+console.log(originalData);
