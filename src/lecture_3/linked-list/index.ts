@@ -1,18 +1,35 @@
+/**
+ * @class Класс узла списка.
+ */
 class Node<T extends any = any> {
 	value: T;
 	next: Node | null = null;
 	prev: Node | null = null;
 
+	/**
+	 * Создаёт узел с указанным значением и пустыми указателями на предыдущий и следующий узлы
+	 *
+	 * @param value Значение узла
+	 */
 	constructor(value: T) {
 		this.value = value;
 	}
 }
 
+/**
+ * @class Двусвязный список
+ */
 export class LinkedList {
 	head: Node | null = null;
 	tail: Node | null = null;
 	size: number = 0;
 
+	/**
+	 * Добавляет значение в список
+	 *
+	 * @param value Значение, которое будет добавлено в список
+	 * @returns Экземпляр списка
+	 */
 	add(value: number | string | boolean) {
 		const node = new Node(value);
 
@@ -21,7 +38,7 @@ export class LinkedList {
 			this.tail = node;
 			this.size++;
 
-			return;
+			return this;
 		}
 
 		const tail = this.tail as Node;
@@ -30,8 +47,16 @@ export class LinkedList {
 		node.prev = tail;
 		this.tail = node;
 		this.size++;
+
+		return this;
 	}
 
+	/**
+	 * Удаляет голову списка, в том числе обрабатывая случаи,
+	 * когда узлов нет, или когда голова и хвост — один узел
+	 *
+	 * @private
+	 */
 	private removeHead() {
 		if (!this.head) {
 			return;
@@ -54,6 +79,12 @@ export class LinkedList {
 		this.head = null;
 	}
 
+	/**
+	 * Удаляет хвостовой узел списка, в том числе обрабатывая случаи,
+	 * когда узлов нет, или когда голова и хвост — один узел
+	 *
+	 * @private
+	 */
 	private removeTail() {
 		if (!this.tail) {
 			return;
@@ -76,17 +107,27 @@ export class LinkedList {
 		this.tail = null;
 	}
 
+	/**
+	 * Удаляет значение из списка
+	 *
+	 * @param value Значение, которое будет удалено из списка
+	 * @returns Экземпляр списка
+	 */
 	remove(value: number | string | boolean) {
 		if (!this.head || !this.tail) {
-			return;
+			return this;
 		}
 
 		if (this.head.value === value) {
 			this.removeHead();
+
+			return this;
 		}
 
 		if (this.tail.value === value) {
 			this.removeTail();
+
+			return this;
 		}
 
 		let current: Node | null = this.head;
@@ -104,8 +145,13 @@ export class LinkedList {
 		}
 
 		this.size--;
+
+		return this;
 	}
 
+	/**
+	 * Итератор для перебора всех элементов списка
+	 */
 	*[Symbol.iterator]() {
 		let current = this.head;
 
