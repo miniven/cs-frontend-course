@@ -1,4 +1,4 @@
-import { ListNode } from './list-node';
+import { ListNode } from './ListNode';
 
 import type { ILinkedList } from './types';
 
