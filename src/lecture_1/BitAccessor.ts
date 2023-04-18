@@ -8,6 +8,26 @@ export class BitAccessor {
 	}
 
 	/**
+	 * Возвращает позицию бита внутри элемента тип. массива
+	 *
+	 * @param position Позиция бита без привязки к элементам тип. массива
+	 * @returns бита внутри элемента тип. массива
+	 */
+	private getBitPosition(position: number) {
+		return position % BitAccessor.BYTE_SIZE;
+	}
+
+	/**
+	 * Возвращает позицию элемента, в котором находится искомая позиция бита
+	 *
+	 * @param position Позиция бита без привязки к элементам тип. массива
+	 * @returns Позиция элемента, в котором находится искомая позиция бита
+	 */
+	private getBytePosition(position: number) {
+		return Math.floor(position / BitAccessor.BYTE_SIZE);
+	}
+
+	/**
 	 * Валидирует позиции элемента массива и его бита
 	 *
 	 * @param elementIndex Индекс элемента массива
@@ -37,6 +57,19 @@ export class BitAccessor {
 	}
 
 	/**
+	 * Возвращает значение бита по абсолютному значению индекса без привязки к номеру элемента
+	 *
+	 * @param absBitIndex Абсолютная позиция бита
+	 * @returns Бит по искомому индексу
+	 */
+	getAbs(absBitIndex: number): 1 | 0 | void {
+		const bytePosition = this.getBytePosition(absBitIndex);
+		const bitPosition = this.getBitPosition(absBitIndex);
+
+		return this.get(bytePosition, bitPosition);
+	}
+
+	/**
 	 * Устанавливает значение бита по индексу у указанного элемента массива
 	 *
 	 * @param elementIndex Индекс элемента массива
@@ -53,6 +86,19 @@ export class BitAccessor {
 		if (value === 1) {
 			this.#array[elementIndex] = this.#array[elementIndex] | (1 << bitIndex);
 		}
+	}
+
+	/**
+	 * Устанавливает значение бита по абсолютному индексу
+	 *
+	 * @param absBitIndex Абсолютный индекс конкретного бита
+	 * @param value Новое значение бита
+	 */
+	setAbs(absBitIndex: number, value: 1 | 0): 1 | 0 | void {
+		const bytePosition = this.getBytePosition(absBitIndex);
+		const bitPosition = this.getBitPosition(absBitIndex);
+
+		return this.set(bytePosition, bitPosition, value);
 	}
 }
 
