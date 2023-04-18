@@ -1,6 +1,16 @@
+import {
+	assertNumber,
+	assertUTF16,
+	encodeNumber,
+	encodeUTF16,
+	isEndOfChar,
+	isUTF16Schema,
+	isNumberSchema,
+	UTF16ValueDecoder,
+	commonValueDecoder,
+} from './helpers';
 import { BitAccessor } from '../../lecture_1/BitAccessor';
 import { limits } from './const';
-import { encodeNumber, encodeUTF16 } from './helpers';
 
 import { IStructure, StructureFieldType, TStructureFieldName, TStructureFieldSchema } from './types';
 
@@ -85,12 +95,15 @@ export class Structure implements IStructure {
 		}
 
 		const valueLength = Structure.getFieldSize(currentFieldSchema);
+		const type = currentFieldSchema[1];
 
-		if (currentFieldSchema[1] === StructureFieldType.U_16) {
+		if (type === StructureFieldType.U_16) {
+			assertNumber(value, limits[type]);
 			encodeNumber(this.#accessor, value, this.#currentBitPointer, valueLength);
 		}
 
-		if (currentFieldSchema[1] === StructureFieldType.UTF_16) {
+		if (type === StructureFieldType.UTF_16) {
+			assertUTF16(value, currentFieldSchema[2]);
 			encodeUTF16(this.#accessor, value, this.#currentBitPointer, valueLength);
 		}
 
@@ -112,15 +125,35 @@ export class Structure implements IStructure {
 		}
 
 		let value = 0;
+		let stringSymbols = [];
 
 		for (let index = 0; index < Structure.getFieldSize(field); index++) {
 			const bitValue = this.#accessor.getAbs(index + position);
 
+			if (isUTF16Schema(field) && isEndOfChar(index)) {
+				stringSymbols.push(value);
+				value = 0;
+			}
+
+			/**
+			 * Значение изначально представляет собой последовательность нулей,
+			 * значит имеет смысл только подставить единицы в нужные разряды.
+			 */
 			if (bitValue) {
-				value = value | (bitValue << index);
+				value = isUTF16Schema(field)
+					? UTF16ValueDecoder(value, bitValue, index)
+					: commonValueDecoder(value, bitValue, index);
 			}
 		}
 
-		return value;
+		if (isNumberSchema(field)) {
+			return value;
+		}
+
+		if (isUTF16Schema(field)) {
+			stringSymbols.push(value);
+
+			return String.fromCharCode(...stringSymbols);
+		}
 	}
 }

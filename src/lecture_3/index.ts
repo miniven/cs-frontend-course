@@ -26,17 +26,14 @@ for (const value of list) {
 
 console.log('STRUCTURE PROBLEM');
 
-const jackBlack = new Structure([
-	// ['name', StructureFieldType.UTF_16, 10], // Число - это максимальное количество символов
-	// ['lastName', StructureFieldType.UTF_16, 10],
-	['age', StructureFieldType.U_16], // uint16
-	['size', StructureFieldType.U_16],
+const pedro = new Structure([
+	['name', StructureFieldType.UTF_16, 10],
+	['lastName', StructureFieldType.UTF_16, 10],
+	['age', StructureFieldType.U_16],
 ]);
 
-// jackBlack.set('name', 'Jack');
-// jackBlack.set('lastName', 'Black');
-jackBlack.set('age', 53);
-jackBlack.set('size', 49);
+pedro.set('name', 'Pedro');
+pedro.set('lastName', 'Pascal');
+pedro.set('age', 53);
 
-console.log('age', jackBlack.get('age')); // 'Jack'
-console.log('size', jackBlack.get('size')); // 'Jack'
+console.log(`Hi! My name is ${pedro.get('name')} ${pedro.get('lastName')} and I'm ${pedro.get('age')} y.o.`);
