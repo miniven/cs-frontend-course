@@ -5,18 +5,45 @@ import type { ILinkedList } from './types';
 /**
  * @class Двусвязный список
  */
-export class LinkedList implements ILinkedList {
-	head: ListNode | null = null;
-	tail: ListNode | null = null;
+export class LinkedList<T> implements ILinkedList<T> {
+	head: ListNode<T> | null = null;
+	tail: ListNode<T> | null = null;
 	size: number = 0;
 
 	/**
-	 * Добавляет значение в список
+	 * Добавляет значение в начало списка
 	 *
-	 * @param value Значение, которое будет добавлено в список
+	 * @param value Значение, которое будет добавлено в начало списка
 	 * @returns Экземпляр списка
 	 */
-	add(value: number | string | boolean) {
+	addFirst(value: T) {
+		const node = new ListNode(value);
+
+		if (this.size === 0) {
+			this.head = node;
+			this.tail = node;
+			this.size++;
+
+			return this;
+		}
+
+		const head = this.head as ListNode;
+
+		this.head = node;
+		this.head.next = head;
+		this.head.next.prev = this.head;
+		this.size++;
+
+		return this;
+	}
+
+	/**
+	 * Добавляет значение в конец списка
+	 *
+	 * @param value Значение, которое будет добавлено в конец списка
+	 * @returns Экземпляр списка
+	 */
+	addLast(value: T) {
 		const node = new ListNode(value);
 
 		if (this.size === 0) {
@@ -40,57 +67,61 @@ export class LinkedList implements ILinkedList {
 	/**
 	 * Удаляет голову списка, в том числе обрабатывая случаи,
 	 * когда узлов нет, или когда голова и хвост — один узел
-	 *
-	 * @private
 	 */
-	private removeHead() {
+	removeFirst() {
 		if (!this.head) {
-			return;
+			return this;
 		}
+
+		this.size--;
 
 		if (this.head === this.tail && this.size === 0) {
 			this.head = null;
 			this.tail = null;
 
-			return;
+			return this;
 		}
 
 		if (this.head.next) {
 			this.head = this.head.next;
 			this.head.prev = null;
 
-			return;
+			return this;
 		}
 
 		this.head = null;
+
+		return this;
 	}
 
 	/**
 	 * Удаляет хвостовой узел списка, в том числе обрабатывая случаи,
 	 * когда узлов нет, или когда голова и хвост — один узел
-	 *
-	 * @private
 	 */
-	private removeTail() {
+	removeLast() {
 		if (!this.tail) {
-			return;
+			return this;
 		}
+
+		this.size--;
 
 		if (this.tail === this.head && this.size === 0) {
 			this.head = null;
 			this.tail = null;
 
-			return;
+			return this;
 		}
 
 		if (this.tail.prev) {
 			this.tail = this.tail.prev;
 			this.tail.next = null;
 
-			return;
+			return this;
 		}
 
 		this.tail = null;
+
+		return this;
 	}
 
 	/**
@@ -99,21 +130,17 @@ export class LinkedList implements ILinkedList {
 	 * @param value Значение, которое будет удалено из списка
 	 * @returns Экземпляр списка
 	 */
-	remove(value: number | string | boolean) {
+	removeValue(value: T) {
 		if (!this.head || !this.tail) {
 			return this;
 		}
 
 		if (this.head.value === value) {
-			this.removeHead();
-
-			return this;
+			return this.removeFirst();
 		}
 
 		if (this.tail.value === value) {
-			this.removeTail();
-
-			return this;
+			return this.removeLast();
 		}
 
 		let current: ListNode | null = this.head;

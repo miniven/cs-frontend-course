@@ -6,17 +6,15 @@ console.log('LINKED LIST PROBLEM');
 
 const list = new LinkedList();
 
-list.add(1);
-list.add(2);
-list.add(3);
+list.addLast(1);
+list.addLast(2);
+list.addLast(3);
 
 // А можно так:
-list.add(4).add(5).add(6).remove(5);
+list.addLast(4).addLast(5).addLast(6).addFirst(0).addFirst(-1).removeValue(5);
 
-console.log(list.head?.value); // 1
-console.log(list.tail?.value); // 3
-console.log(list.head?.next?.value); // 2
-console.log(list.head?.next?.prev?.value); // 1
+console.log(list.head?.value);
+console.log(list.head?.next?.value);
 
 console.log('ITERATION PROBLEM');
 

@@ -4,11 +4,14 @@ export interface IListNode<T extends any = any> {
 	prev: IListNode | null;
 }
 
-export interface ILinkedList {
-	head: IListNode | null;
-	tail: IListNode | null;
+export interface ILinkedList<T> {
+	head: IListNode<T> | null;
+	tail: IListNode<T> | null;
 	size: number;
 
-	add(value: string | number | boolean): this;
-	remove(value: string | number | boolean): this;
+	addFirst(value: T): this;
+	addLast(value: T): this;
+	removeFirst(): this;
+	removeLast(): this;
+	removeValue(value: T): this;
 }
