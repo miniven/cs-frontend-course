@@ -20,4 +20,18 @@ export class Queue<T extends number | string | boolean> implements IQueue<T> {
 
 		return head.value;
 	}
+
+	get head() {
+		const head = this.#list.head;
+
+		if (!this.#list.size || !head) {
+			throw new Error('Queue is empty');
+		}
+
+		return head.value;
+	}
+
+	get size() {
+		return this.#list.size;
+	}
 }
