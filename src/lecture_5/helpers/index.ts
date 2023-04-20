@@ -1,0 +1,1 @@
+export { isValidBracketSequence } from './isValidBracketSequence';
