@@ -1,5 +1,6 @@
-import { isValidBracketSequence } from './helpers';
-import { collapse, recursiveCollapse } from './helpers/collapse';
+import { isValidBracketSequence, collapse, recursiveCollapse } from './helpers';
+
+console.log('COLLAPSE');
 
 const obj = {
 	a: {
