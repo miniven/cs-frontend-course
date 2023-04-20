@@ -47,6 +47,10 @@ export const collapse = (data: Object): TCollapseResult => {
 			continue;
 		}
 
+		/**
+		 * Не используем for...in, потому что нужен обратный порядок элементов
+		 * Эта проблема решается использованием очереди вместо стека, но по заданию нужен стек
+		 */
 		const keys = Object.keys(element);
 
 		for (let index = keys.length; index > 0; index--) {
