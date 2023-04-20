@@ -1,5 +1,6 @@
 import { DEQ } from './DEQ';
 import { Queue } from './Queue';
+import { Stack } from './Stack';
 
 const queue = new Queue();
 
@@ -35,3 +36,20 @@ console.log(deq.popBack());
 console.log(deq.popFront());
 console.log(deq.popBack());
 console.log(deq.popFront());
+
+console.log('STACK');
+
+const stack = new Stack<number>(Int32Array, 10);
+
+stack.push(10);
+stack.push(11);
+stack.push(12);
+
+console.log(stack.head); // 12
+
+console.log(stack.pop()); // 12
+
+console.log(stack.head); // 11
+
+console.log(stack.pop()); // 11
+console.log(stack.pop()); // 10
