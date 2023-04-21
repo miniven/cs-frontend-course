@@ -11,13 +11,13 @@ const addKeyToPrefix = (key: string, prefix?: string): string => (prefix === und
 export const recursiveCollapse = (data: Object): TCollapseResult => {
 	const result: TCollapseResult = {};
 
-	function collapseHelper(data: any, prop?: string) {
-		if (prop !== undefined && (typeof data !== 'object' || data === null)) {
-			return (result[prop] = data);
+	function collapseHelper(data: any, prefix?: string) {
+		if (prefix !== undefined && (typeof data !== 'object' || data === null)) {
+			return (result[prefix] = data);
 		}
 
 		for (let key in data) {
-			collapseHelper(data[key], addKeyToPrefix(key, prop));
+			collapseHelper(data[key], addKeyToPrefix(key, prefix));
 		}
 	}
 
@@ -34,15 +34,15 @@ export const recursiveCollapse = (data: Object): TCollapseResult => {
  */
 export const collapse = (data: Object): TCollapseResult => {
 	const stack: Array<any> = [data];
-	const properties: Array<string> = [];
+	const prefixes: Array<string> = [];
 	const result: TCollapseResult = {};
 
 	while (stack.length) {
 		const element = stack.pop();
-		const prop = properties.pop();
+		const prefix = prefixes.pop();
 
-		if (prop !== undefined && (typeof element !== 'object' || element === null)) {
-			result[prop] = element;
+		if (prefix !== undefined && (typeof element !== 'object' || element === null)) {
+			result[prefix] = element;
 
 			continue;
 		}
@@ -56,7 +56,7 @@ export const collapse = (data: Object): TCollapseResult => {
 		for (let index = keys.length; index > 0; index--) {
 			const key = keys[index - 1];
 
-			properties.push(addKeyToPrefix(key, prop));
+			prefixes.push(addKeyToPrefix(key, prefix));
 			stack.push(element[key]);
 		}
 	}
