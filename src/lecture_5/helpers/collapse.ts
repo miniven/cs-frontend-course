@@ -11,13 +11,13 @@ const addKeyToPrefix = (key: string, prefix?: string): string => (prefix === und
 export const recursiveCollapse = (data: Object): TCollapseResult => {
 	const result: TCollapseResult = {};
 
-	function collapseHelper(data: any, property: string = '') {
-		if (typeof data !== 'object' || data === null) {
-			return (result[property] = data);
+	function collapseHelper(data: any, prop?: string) {
+		if (prop !== undefined && (typeof data !== 'object' || data === null)) {
+			return (result[prop] = data);
 		}
 
 		for (let key in data) {
-			collapseHelper(data[key], addKeyToPrefix(key, property));
+			collapseHelper(data[key], addKeyToPrefix(key, prop));
 		}
 	}
 
