@@ -56,9 +56,15 @@ export class Vector {
 	 *
 	 * @private
 	 */
-	#allocateBuffer() {
+	#allocateBuffer(targetLength: number) {
+		let nextLength = this.#length;
+
+		while (nextLength < targetLength) {
+			nextLength = (nextLength * 3) / 2 + 1;
+		}
+
 		const Constructor = this.#array.constructor as Uint8ArrayConstructor;
-		const nextArray = new Constructor((this.#array.length * 3) / 2 + 1);
+		const nextArray = new Constructor(nextLength);
 
 		let pointer = this.#adjustPointer(this.#backPointer);
 		let nextIndex = 0;
@@ -83,11 +89,13 @@ export class Vector {
 	 * @returns Количество элементов в векторе
 	 */
 	pushFront(...args: number[]): number {
-		for (let num of args) {
-			if (this.#length + 1 > this.#array.length) {
-				this.#allocateBuffer();
-			}
+		const targetLength = this.#length + args.length;
 
+		if (targetLength > this.#array.length) {
+			this.#allocateBuffer(targetLength);
+		}
+
+		for (let num of args) {
 			this.#array[this.#adjustPointer(++this.#frontPointer)] = num;
 			this.#length++;
 		}
@@ -102,11 +110,13 @@ export class Vector {
 	 * @returns Количество элементов в векторе
 	 */
 	pushBack(...args: number[]): number {
-		for (let num of args) {
-			if (this.#length + 1 > this.#array.length) {
-				this.#allocateBuffer();
-			}
+		const targetLength = this.#length + args.length;
 
+		if (targetLength > this.#array.length) {
+			this.#allocateBuffer(targetLength);
+		}
+
+		for (let num of args) {
 			this.#array[this.#adjustPointer(--this.#backPointer)] = num;
 			this.#length++;
 		}

@@ -14,3 +14,14 @@ vector.popFront(); // [4,3,1,2,5,6,7,_,_,_,9]
 vector.pushFront(100); // [4,3,1,2,5,6,7,100,_,_,9]
 vector.popBack(); // [4,3,1,2,5,6,7,100,_,_,9]
 vector.pushBack(255); // [4,3,1,2,5,6,7,100,_,_,255]
+
+console.log(vector.popBack()); // 255
+console.log(vector.popBack()); // 4
+console.log(vector.popBack()); // 3
+console.log(vector.popFront()); // 100
+console.log(vector.popFront()); // 7
+console.log(vector.popFront()); // 6
+console.log(vector.popFront()); // 5
+console.log(vector.popFront()); // 2
+console.log(vector.popBack()); // 1
+console.log(vector.length); // 0
