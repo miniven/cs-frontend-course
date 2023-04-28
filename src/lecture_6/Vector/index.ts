@@ -122,8 +122,6 @@ export class Vector {
 	popFront() {
 		this.assertEmptyStack();
 
-		console.log(this.#frontPointer);
-
 		const value = this.#array[this.#adjustPointer(this.#frontPointer--)];
 
 		this.#length--;
