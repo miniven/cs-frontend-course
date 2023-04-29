@@ -1,4 +1,7 @@
+import { Matrix3D } from './Matrix';
 import { Vector } from './Vector';
+
+console.log('VECTOR');
 
 const vector = new Vector(Uint8Array, 4);
 
@@ -25,3 +28,11 @@ console.log(vector.popFront()); // 5
 console.log(vector.popFront()); // 2
 console.log(vector.popBack()); // 1
 console.log(vector.length); // 0
+
+console.log('MATRIX');
+
+const matrix = new Matrix3D(5, 5, 5);
+
+matrix.set({ x: 1, y: 1, z: 1 }, 100);
+
+console.log(matrix.get({ x: 1, y: 1, z: 1 })); // 10
