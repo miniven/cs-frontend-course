@@ -60,11 +60,7 @@ export class HashMap<T> {
 	 *
 	 * @private
 	 */
-	#allocateBufferAttempt() {
-		if (this.#length / this.#buffer.length < CAPACITY_RATE) {
-			return;
-		}
-
+	#allocateBuffer() {
 		const nextLength = getClosestPrime(Math.floor((this.#buffer.length * 3) / 2 + 1));
 		const prevBuffer = this.#buffer;
 
@@ -88,8 +84,8 @@ export class HashMap<T> {
 	set(key: TKey, value: T) {
 		const hash = this.hash(key);
 
-		if (!hash) {
-			return;
+		if (this.#length / this.#buffer.length > CAPACITY_RATE) {
+			this.#allocateBuffer();
 		}
 
 		const index = this.#getBucketIndex(hash);
@@ -100,7 +96,6 @@ export class HashMap<T> {
 		if (this.#buffer[index] === undefined) {
 			this.#buffer[index] = [[key, value]];
 			this.#length++;
-			this.#allocateBufferAttempt();
 
 			return;
 		}
@@ -121,16 +116,16 @@ export class HashMap<T> {
 		 */
 		this.#buffer[index].push([key, value]);
 		this.#length++;
-		this.#allocateBufferAttempt();
 	}
 
+	/**
+	 * Возвращает значение, которое хранится по переданному ключу
+	 *
+	 * @param key Ключ
+	 * @returns Значение по ключу
+	 */
 	get(key: TKey) {
 		const hash = this.hash(key);
-
-		if (!hash) {
-			return;
-		}
-
 		const index = this.#getBucketIndex(hash);
 
 		if (this.#buffer[index] === undefined) {
@@ -140,11 +135,10 @@ export class HashMap<T> {
 		return this.#buffer[index].find((element) => element[0] === key)?.[1];
 	}
 
+	/**
+	 * Геттер для количества добавленных элементов
+	 */
 	get length() {
 		return this.#length;
-	}
-
-	get buffer() {
-		return this.#buffer;
 	}
 }
