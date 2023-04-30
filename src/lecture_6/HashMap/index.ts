@@ -39,7 +39,7 @@ export class HashMap<T> {
 				return getObjectHash(key);
 			}
 			default: {
-				return null;
+				throw new Error('Invalid key type');
 			}
 		}
 	}
