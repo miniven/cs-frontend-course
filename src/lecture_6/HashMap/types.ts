@@ -1,1 +1,1 @@
-export type TKeys = string | number | object;
+export type TKey = string | number | object;

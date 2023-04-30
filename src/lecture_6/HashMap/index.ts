@@ -1,10 +1,10 @@
 import { CAPACITY_RATE } from './const';
 import { getClosestPrime, getObjectHash, getStringHash } from './helpers';
 
-import type { TKeys } from './types';
+import type { TKey } from './types';
 
 export class HashMap<T> {
-	#buffer: Array<Array<[TKeys, T]>>;
+	#buffer: Array<Array<[TKey, T]>>;
 	#length = 0;
 
 	/**
@@ -27,7 +27,7 @@ export class HashMap<T> {
 	 * @param key Ключ
 	 * @returns Целое число
 	 */
-	private hash(key: TKeys) {
+	private hash(key: TKey) {
 		switch (typeof key) {
 			case 'number': {
 				return key;
@@ -60,7 +60,11 @@ export class HashMap<T> {
 	 *
 	 * @private
 	 */
-	#allocateBuffer() {
+	#allocateBufferAttempt() {
+		if (this.#length / this.#buffer.length < CAPACITY_RATE) {
+			return;
+		}
+
 		const nextLength = getClosestPrime(Math.floor((this.#buffer.length * 3) / 2 + 1));
 		const prevBuffer = this.#buffer;
 
@@ -81,26 +85,22 @@ export class HashMap<T> {
 	 * @param key Ключ
 	 * @param value Значение
 	 */
-	set(key: TKeys, value: T) {
+	set(key: TKey, value: T) {
 		const hash = this.hash(key);
 
 		if (!hash) {
 			return;
 		}
 
-		if (this.#length / this.#buffer.length > CAPACITY_RATE) {
-			this.#allocateBuffer();
-		}
-
 		const index = this.#getBucketIndex(hash);
-
-		this.#length++;
 
 		/**
 		 * Если не произошло коллизии, то просто создаём список и кладём в него элемент с ключом
 		 */
 		if (this.#buffer[index] === undefined) {
 			this.#buffer[index] = [[key, value]];
+			this.#length++;
+			this.#allocateBufferAttempt();
 
 			return;
 		}
@@ -108,7 +108,7 @@ export class HashMap<T> {
 		/**
 		 * Если произошла коллизия, то ищем элемент с таким ключом среди ранее добавленных и заменяем его
 		 */
-		const currentKeyIndex = this.buffer[index].findIndex((element) => element[0] === key);
+		const currentKeyIndex = this.#buffer[index].findIndex((element) => element[0] === key);
 
 		if (currentKeyIndex >= 0) {
 			this.#buffer[index][currentKeyIndex][1] = value;
@@ -120,9 +120,11 @@ export class HashMap<T> {
 		 * Если коллизия была, но элемент с таким же ключом не добавлялся, то просто добавляем в список новый элемент
 		 */
 		this.#buffer[index].push([key, value]);
+		this.#length++;
+		this.#allocateBufferAttempt();
 	}
 
-	get(key: TKeys) {
+	get(key: TKey) {
 		const hash = this.hash(key);
 
 		if (!hash) {
@@ -135,7 +137,11 @@ export class HashMap<T> {
 			return;
 		}
 
-		return this.buffer[index].find((element) => element[0] === key)?.[1];
+		return this.#buffer[index].find((element) => element[0] === key)?.[1];
+	}
+
+	get length() {
+		return this.#length;
 	}
 
 	get buffer() {
