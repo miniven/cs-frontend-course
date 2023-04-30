@@ -1,3 +1,4 @@
+import { HashMap } from './HashMap';
 import { Matrix3D } from './Matrix';
 import { Vector } from './Vector';
 
@@ -36,3 +37,25 @@ const matrix = new Matrix3D(5, 5, 5);
 matrix.set({ x: 1, y: 1, z: 1 }, 100);
 
 console.log(matrix.get({ x: 1, y: 1, z: 1 })); // 10
+
+console.log('HASH MAP');
+
+const map = new HashMap<string | number>(4);
+
+map.set(1, '1');
+map.set(2, '2');
+map.set('3', '3');
+map.set('four', '4');
+map.set({ five: 5 }, '5');
+
+const six = { six: 6 };
+
+map.set(six, 6);
+map.set(six, '6');
+
+console.log(map.get(1)); // '1'
+console.log(map.get(2)); // '2'
+console.log(map.get('3')); // '3'
+console.log(map.get('four')); // '4'
+console.log(map.get({ five: 5 })); // undefined
+console.log(map.get(six)); // '6'
