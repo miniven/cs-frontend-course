@@ -69,14 +69,14 @@ export class Graph<T> implements IGraph<T> {
 
 			while (stack.length) {
 				const key = stack.pop();
-				const color = colors.get(key);
+				const color = colors.get(key!);
 
 				/**
 				 * Ситуация, когда все потомки вершины посещены и мы вновь достаём её из стека:
 				 * В таком случае считаем, что вершина полностью обработана
 				 */
 				if (color === Colors.GRAY) {
-					colors.set(key, Colors.BLACK);
+					colors.set(key!, Colors.BLACK);
 
 					continue;
 				}
@@ -119,7 +119,7 @@ export class Graph<T> implements IGraph<T> {
 
 			while (queue.length) {
 				const key = queue.shift();
-				const color = colors.get(key);
+				const color = colors.get(key!);
 
 				/**
 				 * Если вершина еще не посещалась, помечаем её, как посещенную, но еще не обработанную
