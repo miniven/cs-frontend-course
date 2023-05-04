@@ -60,53 +60,114 @@ export class Graph<T> implements IGraph<T> {
 		return adjacent.some((edge: Edge<T>) => edge.destination === destination);
 	}
 
-	*getDFSIterator() {
-		const colors = createPrefilledColors(this.#list);
-		const list = this.#list;
+	/**
+	 * Обходит связный подграф в глубину, начиная с переданной вершины
+	 *
+	 * @param startVertex Вершина, с которой начнётся обход графа
+	 * @param colors Отображение вершин графа на их цвета в контексте обхода графа
+	 */
+	*#DFS(startVertex: T, colors: Map<T, Colors>): Iterable<[T, Colors]> {
+		const stack = [startVertex];
 
-		function* DFS(startVertex: T) {
-			const stack = [startVertex];
+		while (stack.length) {
+			const key = stack.pop();
 
-			while (stack.length) {
-				const key = stack.pop();
-				const color = colors.get(key!);
+			if (!key) {
+				continue;
+			}
 
-				/**
-				 * Ситуация, когда все потомки вершины посещены и мы вновь достаём её из стека:
-				 * В таком случае считаем, что вершина полностью обработана
-				 */
-				if (color === Colors.GRAY) {
-					colors.set(key!, Colors.BLACK);
+			const color = colors.get(key);
 
-					continue;
-				}
+			/**
+			 * Ситуация, когда все потомки вершины посещены и мы вновь достаём её из стека:
+			 * В таком случае считаем, что вершина полностью обработана
+			 */
+			if (color === Colors.GRAY) {
+				colors.set(key, Colors.BLACK);
 
-				/**
-				 * Если вершина еще не посещалась, помечаем её, как посещенную, но еще не обработанную
-				 */
-				if (color === Colors.WHITE && key) {
-					colors.set(key, Colors.GRAY);
-					stack.push(key);
+				yield [key, Colors.BLACK];
 
-					yield key;
+				continue;
+			}
 
-					const adjacent = list.get(key!);
+			/**
+			 * Если вершина еще не посещалась, помечаем её, как посещенную, но еще не обработанную
+			 */
+			if (color === Colors.WHITE && key) {
+				colors.set(key, Colors.GRAY);
+				stack.push(key);
 
-					if (adjacent) {
-						for (let index = adjacent.length; index > 0; index--) {
-							const edge = adjacent[index - 1];
+				yield [key, Colors.GRAY];
 
-							if (colors.get(edge.destination) === Colors.WHITE) {
-								stack.push(edge.destination);
-							}
+				const adjacent = this.#list.get(key!);
+
+				if (adjacent) {
+					for (let index = adjacent.length; index > 0; index--) {
+						const edge = adjacent[index - 1];
+
+						if (colors.get(edge.destination) === Colors.WHITE) {
+							stack.push(edge.destination);
 						}
 					}
 				}
 			}
 		}
+	}
 
-		for (const [key] of list) {
-			yield* DFS(key);
+	/**
+	 * Обходит связный подграф в ширину, начиная с переданной вершины
+	 *
+	 * @param startVertex Вершина, с которой начнётся обход графа
+	 * @param colors Отображение вершин графа на их цвета в контексте обхода графа
+	 */
+	*#BFS(startVertex: T, colors: Map<T, Colors>): Iterable<T> {
+		const queue = [startVertex];
+
+		while (queue.length) {
+			const key = queue.shift();
+			const color = colors.get(key!);
+
+			/**
+			 * Если вершина еще не посещалась, помечаем её, как посещенную, но еще не обработанную
+			 */
+			if (color === Colors.WHITE && key) {
+				colors.set(key, Colors.GRAY);
+				queue.push(key);
+
+				yield key;
+
+				const adjacent = this.#list.get(key!);
+
+				if (adjacent) {
+					for (const edge of adjacent) {
+						if (colors.get(edge.destination) === Colors.WHITE) {
+							queue.push(edge.destination);
+						}
+					}
+				}
+
+				/**
+				 * Запланировали посещение всех смежных вершин, значит с текущей закончили, она обработана
+				 */
+				colors.set(key, Colors.BLACK);
+			}
+		}
+	}
+
+	*getDFSIterator() {
+		const colors = createPrefilledColors(this.#list);
+		const list = this.#list;
+
+		for (const [vertex] of list) {
+			for (const [currentVertex, currentColor] of this.#DFS(vertex, colors)) {
+				/**
+				 * При DFS мы показываем вершины в порядке их посещения
+				 * Я решил, что дам возможность отследить и посещение и окончательную обработку вершины
+				 */
+				if (currentColor === Colors.GRAY) {
+					yield currentVertex;
+				}
+			}
 		}
 	}
 
@@ -114,42 +175,12 @@ export class Graph<T> implements IGraph<T> {
 		const colors = createPrefilledColors(this.#list);
 		const list = this.#list;
 
-		function* BFS(startVertex: T) {
-			const queue = [startVertex];
-
-			while (queue.length) {
-				const key = queue.shift();
-				const color = colors.get(key!);
-
-				/**
-				 * Если вершина еще не посещалась, помечаем её, как посещенную, но еще не обработанную
-				 */
-				if (color === Colors.WHITE && key) {
-					colors.set(key, Colors.GRAY);
-					queue.push(key);
-
-					yield key;
-
-					const adjacent = list.get(key!);
-
-					if (adjacent) {
-						for (const edge of adjacent) {
-							if (colors.get(edge.destination) === Colors.WHITE) {
-								queue.push(edge.destination);
-							}
-						}
-					}
-
-					/**
-					 * Запланировали посещение всех смежных вершин, значит с текущей закончили, она обработана
-					 */
-					colors.set(key, Colors.BLACK);
-				}
-			}
-		}
-
 		for (const [key] of list) {
-			yield* BFS(key);
+			yield* this.#BFS(key, colors);
 		}
+	}
+
+	topologicalSort(): Array<T> {
+		return [...this.getDFSIterator()];
 	}
 }

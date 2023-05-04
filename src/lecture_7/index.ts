@@ -5,22 +5,22 @@ const graph = new Graph<string>(null, true);
 graph.addVertex('A');
 graph.addVertex('B');
 graph.addVertex('C');
-graph.addVertex('D').addVertex('E').addVertex('F');
+graph.addVertex('D').addVertex('E').addVertex('F').addVertex('G');
 
 graph.addEdge('A', 'B');
-graph.addEdge('A', 'E').addEdge('B', 'C').addEdge('C', 'D');
+graph.addEdge('A', 'F').addEdge('B', 'C').addEdge('C', 'D').addEdge('C', 'E');
 
 console.log(graph.isAdjacent('A', 'B')); // true
 console.log(graph.isAdjacent('A', 'C')); // false
 console.log(graph.isAdjacent('A', 'b')); // false
 
-//       A     F
+//       A     G
 //      / \
-//     B   E
+//     B   F
 //    /
 //   C
-//  /
-// D
+//  / \
+// D   E
 
 console.log('DFS', ...graph.getDFSIterator()); // [A B C D E F]
 console.log('BFS', ...graph.getBFSIterator()); // [A B E C D F]

@@ -58,6 +58,11 @@ export interface IGraph<T> {
 	 * Возвращает итерируемый объект для перебора вершин графа по стратегии BFS
 	 */
 	getBFSIterator(): Iterable<T>;
+
+	/**
+	 * Возвращает массив вершин графа, отсортированных в топологическом порядке
+	 */
+	topologicalSort(): Array<T>;
 }
 
 export enum Colors {
