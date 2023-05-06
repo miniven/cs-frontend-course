@@ -156,15 +156,26 @@ export class Graph<T> implements IGraph<T> {
 
 	*getDFSIterator() {
 		const colors = createPrefilledColors(this.#list);
-		const list = this.#list;
 
-		for (const [vertex] of list) {
+		for (const [vertex] of this.#list) {
 			for (const [currentVertex, currentColor] of this.#DFS(vertex, colors)) {
 				/**
 				 * При DFS мы показываем вершины в порядке их посещения
 				 * Я решил, что дам возможность отследить и посещение и окончательную обработку вершины
 				 */
 				if (currentColor === Colors.GRAY) {
+					yield currentVertex;
+				}
+			}
+		}
+	}
+
+	*getDFSReversedIterator() {
+		const colors = createPrefilledColors(this.#list);
+
+		for (const [vertex] of this.#list) {
+			for (const [currentVertex, currentColor] of this.#DFS(vertex, colors)) {
+				if (currentColor === Colors.BLACK) {
 					yield currentVertex;
 				}
 			}

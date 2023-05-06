@@ -23,4 +23,5 @@ console.log(graph.isAdjacent('A', 'b')); // false
 // D   E
 
 console.log('DFS', ...graph.getDFSIterator()); // [A B C D E F]
+console.log('DFS Reversed', ...graph.getDFSReversedIterator()); // [D E C B F A G]
 console.log('BFS', ...graph.getBFSIterator()); // [A B E C D F]
