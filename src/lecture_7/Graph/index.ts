@@ -194,4 +194,86 @@ export class Graph<T> implements IGraph<T> {
 	topologicalSort(): Array<T> {
 		return [...this.getDFSIterator()];
 	}
+
+	#getClosestNotVisitedVertex(visited: Map<T, boolean>, distances: Map<T, number>): T {
+		let minVertex = null;
+		let minDistance = Infinity;
+
+		for (const vertex of this.#list.keys()) {
+			if (!visited.get(vertex) && distances.get(vertex)! < minDistance) {
+				minDistance = distances.get(vertex)!;
+				minVertex = vertex;
+			}
+		}
+
+		return minVertex!;
+	}
+
+	#restorePath(previous: Map<T, T | null>, start: T, end: T) {
+		const path = [end];
+		let current = end;
+
+		while (current !== null) {
+			const prev = previous.get(current)!;
+
+			path.push(prev);
+			current = prev;
+
+			if (prev === start) {
+				return path.reverse();
+			}
+		}
+
+		throw new Error(Errors.PATH_NOT_FOUND);
+	}
+
+	getShortPath(start: T, end: T): [number, Array<T>] {
+		if (!this.#directed) {
+			throw new Error(Errors.UNABLE_FIND_SHORT_PATH);
+		}
+
+		const keys = Array.from(this.#list.keys());
+		const visited = new Map<T, boolean>();
+		const distances = new Map<T, number>();
+		const previous = new Map<T, T | null>();
+
+		function hasUnvisited() {
+			for (const vertex of keys) {
+				if (!visited.get(vertex) && distances.get(vertex)! < Infinity) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		function relax(start: T, edge: Edge<T>) {
+			const newDistance = distances.get(start)! + edge.weight!;
+
+			if (distances.get(edge.destination)! > newDistance) {
+				distances.set(edge.destination, newDistance);
+				previous.set(edge.destination, start);
+			}
+		}
+
+		for (const vertex of keys) {
+			distances.set(vertex, Infinity);
+			previous.set(vertex, null);
+		}
+
+		distances.set(start, 0);
+
+		while (hasUnvisited()) {
+			const nextVertex = this.#getClosestNotVisitedVertex(visited, distances);
+			const neighbours = this.#list.get(nextVertex)!;
+
+			visited.set(nextVertex, true);
+
+			for (const edge of neighbours) {
+				relax(nextVertex, edge);
+			}
+		}
+
+		return [distances.get(end)!, this.#restorePath(previous, start, end)];
+	}
 }
