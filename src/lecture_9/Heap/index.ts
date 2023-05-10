@@ -10,16 +10,60 @@ export class Heap<T> {
 	}
 
 	/**
+	 * Ставит указанный элемент массива в правильную позицию, соответствующую правилам бинарной кучи
+	 *
+	 * @param array Массив, в котором будет происходить перестановка
+	 * @param pointer Начальный индекс элемента, который необходимо поставить в правильную позицию
+	 * @param rightLimit Правая граница массива, за которой нас не интересуют элементы
+	 * @param comparator Функция-компаратор
+	 *
+	 * @returns Исходный массив
+	 */
+	static heapify<T>(
+		array: Array<T>,
+		pointer: number,
+		rightLimit: number,
+		comparator: (inserted: T, compared: T) => number
+	) {
+		while (pointer < rightLimit) {
+			let largest = pointer;
+
+			/**
+			 * Делаем поправку на индексацию от 0
+			 */
+			const leftChildIndex = Heap.getLeftChildIndex(largest + 1) - 1;
+			const rightChildIndex = Heap.getRightChildIndex(largest + 1) - 1;
+
+			if (leftChildIndex < rightLimit && comparator(array[largest], array[leftChildIndex]) > 0) {
+				largest = leftChildIndex;
+			}
+
+			if (rightChildIndex < rightLimit && comparator(array[largest], array[rightChildIndex]) > 0) {
+				largest = rightChildIndex;
+			}
+
+			if (largest === pointer) {
+				break;
+			}
+
+			Heap.swap(array, pointer, largest);
+			pointer = largest;
+		}
+
+		return array;
+	}
+
+	/**
 	 * Меняет местами два элемента в буфере
 	 *
 	 * @param first Индекс первого элемента
 	 * @param second Индекс второго элемента
 	 */
-	#swap(first: number, second: number) {
-		const temp = this.#buffer[first];
+	static swap<T>(buffer: Array<T>, first: number, second: number) {
+		const temp = buffer[first];
 
-		this.#buffer[first] = this.#buffer[second];
-		this.#buffer[second] = temp;
+		buffer[first] = buffer[second];
+		buffer[second] = temp;
 	}
 
 	/**
@@ -28,7 +72,7 @@ export class Heap<T> {
 	 * @param index Индекс элемента
 	 * @returns Индекс родителя
 	 */
-	#getParentIndex(index: number): number {
+	static getParentIndex(index: number): number {
 		return Math.floor(index / 2);
 	}
 
@@ -38,7 +82,7 @@ export class Heap<T> {
 	 * @param index Индекс элемента
 	 * @returns Индекс левого потомка
 	 */
-	#getLeftChildIndex(index: number): number {
+	static getLeftChildIndex(index: number): number {
 		return index * 2;
 	}
 
@@ -48,7 +92,7 @@ export class Heap<T> {
 	 * @param index Индекс элемента
 	 * @returns Индекс правого потомка
 	 */
-	#getRightChildIndex(index: number): number {
+	static getRightChildIndex(index: number): number {
 		return index * 2 + 1;
 	}
 
@@ -61,13 +105,13 @@ export class Heap<T> {
 		let pointer = start;
 
 		while (pointer > 1) {
-			const parentPointer = this.#getParentIndex(pointer);
+			const parentPointer = Heap.getParentIndex(pointer);
 
 			if (this.#comparator(this.#buffer[pointer], this.#buffer[parentPointer]) >= 0) {
 				break;
 			}
 
-			this.#swap(pointer, parentPointer);
+			Heap.swap(this.#buffer, pointer, parentPointer);
 			pointer = parentPointer;
 		}
 	}
@@ -82,8 +126,8 @@ export class Heap<T> {
 
 		while (pointer < this.#length) {
 			let nextIndex = pointer;
-			const leftChildIndex = this.#getLeftChildIndex(nextIndex);
-			const rightChildIndex = this.#getRightChildIndex(nextIndex);
+			const leftChildIndex = Heap.getLeftChildIndex(nextIndex);
+			const rightChildIndex = Heap.getRightChildIndex(nextIndex);
 
 			if (
 				leftChildIndex <= this.#length &&
@@ -103,7 +147,7 @@ export class Heap<T> {
 				break;
 			}
 
-			this.#swap(pointer, nextIndex);
+			Heap.swap(this.#buffer, pointer, nextIndex);
 			pointer = nextIndex;
 		}
 	}
@@ -128,7 +172,7 @@ export class Heap<T> {
 
 		const value = this.#buffer[1];
 
-		this.#swap(1, this.#length);
+		Heap.swap(this.#buffer, 1, this.#length);
 
 		this.#length--;
 		this.#siftDown(1);
@@ -136,17 +180,3 @@ export class Heap<T> {
 		return value;
 	}
 }
-
-const heap = new Heap<number>((a, b) => a - b);
-
-heap.push(8);
-heap.push(5);
-heap.push(100);
-heap.push(3);
-heap.push(71);
-
-console.log(heap.pop());
-console.log(heap.pop());
-console.log(heap.pop());
-console.log(heap.pop());
-console.log(heap.pop());
