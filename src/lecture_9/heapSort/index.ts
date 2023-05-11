@@ -18,7 +18,7 @@ export function heapSort<T>(arr: Array<T>, comparator: (first: T, second: T) => 
 	 * Трансформируем произвольный массив в бинарную кучу
 	 */
 	for (let index = Math.floor(arr.length / 2); index >= 0; index--) {
-		Heap.heapify<T>(arr, index, arr.length, oppositeComparator);
+		Heap.heapify<T>(arr, index, arr.length - 1, oppositeComparator);
 	}
 
 	let rightLimit = arr.length - 1;
