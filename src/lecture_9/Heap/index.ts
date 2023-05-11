@@ -27,6 +27,7 @@ export class Heap<T> {
 	) {
 		while (pointer < rightLimit) {
 			let largest = pointer;
+			const value = array[largest];
 
 			/**
 			 * Делаем поправку на индексацию от 0
@@ -103,6 +104,7 @@ export class Heap<T> {
 	 */
 	#siftUp(start: number) {
 		let pointer = start;
+		const value = this.#buffer[pointer];
 
 		while (pointer > 1) {
 			const parentPointer = Heap.getParentIndex(pointer);
@@ -111,8 +113,12 @@ export class Heap<T> {
 				break;
 			}
 
-			Heap.swap(this.#buffer, pointer, parentPointer);
+			this.#buffer[pointer] = this.#buffer[parentPointer];
 			pointer = parentPointer;
+		}
+
+		if (pointer !== start) {
+			this.#buffer[pointer] = value;
 		}
 	}
 
@@ -123,6 +129,7 @@ export class Heap<T> {
 	 */
 	#siftDown(start: number) {
 		let pointer = start;
+		const value = this.#buffer[pointer];
 
 		while (pointer < this.#length) {
 			let nextIndex = pointer;
@@ -147,8 +154,12 @@ export class Heap<T> {
 				break;
 			}
 
-			Heap.swap(this.#buffer, pointer, nextIndex);
+			this.#buffer[pointer] = this.#buffer[nextIndex];
 			pointer = nextIndex;
+		}
+
+		if (pointer !== start) {
+			this.#buffer[pointer] = value;
 		}
 	}
 
