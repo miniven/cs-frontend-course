@@ -1,6 +1,6 @@
 import { Color, Direction } from './types';
 
-class TreeNode<T = unknown> {
+export class TreeNode<T = unknown> {
 	value: T;
 	left: TreeNode<T> | null = null;
 	right: TreeNode<T> | null = null;

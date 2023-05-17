@@ -1,5 +1,6 @@
 /**/_*.js
 /node_modules/
 /build/
+/src/__test__/
 
 .DS_Store
