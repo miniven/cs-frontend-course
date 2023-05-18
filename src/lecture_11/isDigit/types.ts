@@ -1,0 +1,5 @@
+export enum State {
+	DEFINITION,
+	EXPECT_ARABIAN,
+	EXPECT_ROMAN,
+}
