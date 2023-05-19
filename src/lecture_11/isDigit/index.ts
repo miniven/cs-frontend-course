@@ -1,9 +1,5 @@
-import { ARABIAN_DIGITS_RANGE, ROME_DIGITS_SET } from './const';
-import { State } from './types';
-
-const isInRange = (char: string, range: [number, number]) => {
-	return char.charCodeAt(0) >= range[0] && char.charCodeAt(0) <= range[1];
-};
+import { isInRange } from '../helpers';
+import { ARABIAN_DIGITS_RANGE, ROME_DIGITS_SET, State } from './const';
 
 export const isDigit = (value: string) => {
 	if (!value.length) {
