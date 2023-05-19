@@ -29,9 +29,7 @@ export function* createIterableString(value: string): Iterable<string> {
 			 */
 			if (state === State.EXPECT_LOW) {
 				yield high;
-
 				high = char;
-				state = State.EXPECT_LOW;
 
 				continue;
 			}
@@ -66,7 +64,6 @@ export function* createIterableString(value: string): Iterable<string> {
 		 */
 		if (state === State.EXPECT_LOW) {
 			yield high;
-
 			high = '';
 		}
 
