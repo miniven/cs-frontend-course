@@ -1,4 +1,4 @@
-import { createIterableString } from './createIterableString';
+import { createGraphemesIterator, createUnicodeSymbolsIterator } from './iterators';
 import { isDigit } from './isDigit';
 
 console.log('IS DIGIT');
@@ -17,9 +17,12 @@ console.log(isDigit('d😮d')); // false
 
 console.log('STRING ITERATOR');
 
-console.log([...createIterableString('a😀\uDE00\uD83D')]); // [ 'a', '😀', '�', '�' ]
-console.log([...createIterableString('a😀\uD83D\uDE00')]); // [ 'a', '😀', '😀' ]
-console.log([...createIterableString('a😀\uD83Dc\uDE00')]); // [ 'a', '😀', '�', 'c', '�' ]
-console.log([...createIterableString('a😀\uD83D\uDE00c')]); // [ 'a', '😀', '😀', 'c' ]
-console.log([...createIterableString('abc')]); // [ 'a', 'b', 'c' ]
-console.log([...createIterableString('\uD83D')]); // [ '�' ]
+console.log([...createUnicodeSymbolsIterator('a😀\uDE00\uD83D')]); // [ 'a', '😀', '�', '�' ]
+console.log([...createUnicodeSymbolsIterator('a😀\uD83D\uDE00')]); // [ 'a', '😀', '😀' ]
+console.log([...createUnicodeSymbolsIterator('a😀\uD83Dc\uDE00')]); // [ 'a', '😀', '�', 'c', '�' ]
+console.log([...createUnicodeSymbolsIterator('a😀\uD83D\uDE00c')]); // [ 'a', '😀', '😀', 'c' ]
+console.log([...createUnicodeSymbolsIterator('abc')]); // [ 'a', 'b', 'c' ]
+console.log([...createUnicodeSymbolsIterator('\uD83D')]); // [ '�' ]
+
+console.log([...createGraphemesIterator('1😃à👩🏽‍❤️‍💋‍👨')]); // ['1', '😃', 'à', '🇷🇺', '👩🏽‍❤️‍💋‍👨'])
+console.log([...createGraphemesIterator('1à👩🏽')]);
