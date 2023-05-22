@@ -19,3 +19,9 @@ console.log(trie.has('abd')); // false
 
 trie.add('hello');
 console.log(trie.has('hello')); // true
+
+trie.add('bob');
+console.log(trie.has('bob')); // true
+
+trie.removeRec('bob');
+console.log(trie.has('bob')); // false

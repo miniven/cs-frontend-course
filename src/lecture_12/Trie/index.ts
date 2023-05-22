@@ -108,4 +108,37 @@ export class Trie {
 
 		return this;
 	}
+
+	removeRec(word: string) {
+		if (!this.has(word)) {
+			return this;
+		}
+
+		const letters = [...word];
+
+		const visitNodes = (index: number, node: TrieNode) => {
+			const char = letters[index];
+			const nextNodeIndex = node.edges.get(char)!;
+			const nextNode = this.#buffer[nextNodeIndex];
+
+			if (!char && node.isTerminal) {
+				node.isTerminal = false;
+
+				return;
+			}
+
+			visitNodes(++index, nextNode);
+
+			if (nextNode.edges.size === 0 && !nextNode.isTerminal) {
+				nextNode.disable();
+				node.edges.delete(char);
+			}
+		};
+
+		visitNodes(0, this.#buffer[0]);
+	}
+
+	get biffer() {
+		return this.#buffer;
+	}
 }
