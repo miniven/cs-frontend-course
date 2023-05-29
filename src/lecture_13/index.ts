@@ -1,4 +1,4 @@
-import { calcExpression } from './calculate';
+import { calculate } from './calculate';
 
 console.log('Задание 1');
 
@@ -66,6 +66,14 @@ console.log(res); // Hello, Bob! Your age is 10.
 console.log(res2); // This is the way, Ben
 
 console.log('Задание 5');
+
+export function calcExpression(expr: string) {
+	const mathExp = /[\(+-]?\d+[\s\d()*%+-]+\d+\)?/g;
+
+	return expr.replace(mathExp, (match) => {
+		return String(calculate(match));
+	});
+}
 
 const calculation = calcExpression(`
   Какой-то текст 1 + (10 + (15 - 24)) ** 2

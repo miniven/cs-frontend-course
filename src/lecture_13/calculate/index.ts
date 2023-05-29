@@ -1,7 +1,6 @@
-import { isValidBracketSequence } from '../../lecture_5/helpers';
 import { Brackets, Errors, States } from './types';
 
-function calculate(expr: string): number {
+export function calculate(expr: string): number {
 	const operations = new Map([
 		['+', (a: number, b: number) => a + b],
 		['-', (a: number, b: number) => a - b],
@@ -13,8 +12,6 @@ function calculate(expr: string): number {
 	const numbersStack: number[] = [];
 	const operatorsStack: string[] = [];
 	const elements = expr.split(/\s|(?<=\()|(?=\))/);
-
-	console.log(elements);
 
 	let state = States.EXPECT_FIRST_OPERAND;
 	let bracketsBalance = 0;
@@ -78,12 +75,4 @@ function calculate(expr: string): number {
 	}
 
 	return numbersStack[numbersStack.length - 1];
-}
-
-export function calcExpression(expr: string) {
-	const mathExp = /[\(+-]?\d+[\s\d\(\)\+\-\*%]+\d+\)?/gm;
-
-	return expr.replace(mathExp, (match) => {
-		return String(calculate(match));
-	});
 }
