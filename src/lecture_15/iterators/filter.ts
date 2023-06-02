@@ -1,4 +1,7 @@
-export const filter = <T>(iterable: Iterable<T | undefined>, predicate: (value: T) => boolean): IterableIterator<T> => {
+export const filter = <T>(
+	iterable: Iterable<T | undefined>,
+	predicate: (value: T | undefined) => boolean
+): IterableIterator<T | undefined> => {
 	const iterator = iterable[Symbol.iterator]();
 
 	return {
@@ -8,14 +11,11 @@ export const filter = <T>(iterable: Iterable<T | undefined>, predicate: (value: 
 		next() {
 			let result = iterator.next();
 
-			while (result.value !== undefined && !predicate(result.value)) {
+			while (!result.done && !predicate(result.value)) {
 				result = iterator.next();
 			}
 
-			return {
-				value: result.value,
-				done: result.done,
-			};
+			return result;
 		},
 		return() {
 			return {

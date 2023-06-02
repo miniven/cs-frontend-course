@@ -33,7 +33,7 @@ const randomIntFilter = random(1, 10);
 
 console.log([
 	...take(
-		filter(randomIntFilter, (value: number) => value < 5),
+		filter(randomIntFilter, (value) => value! < 5),
 		10
 	),
 ]);
@@ -43,6 +43,14 @@ console.log('Функция enumerate:');
 const randomIntEnum = random(1, 10);
 
 console.log([...take(enumerate(randomIntEnum), 3)]); // [[0, ...], [1, ...], [2, ...]]
+
+const enumerableRandonInts = enumerate(random(1, 4));
+
+console.log(enumerableRandonInts.next()); // { value: [0, num], done: false }
+console.log(enumerableRandonInts.next()); // { value: [1, num], done: false }
+console.log(enumerableRandonInts.return!()); // { value: undefined, done: true }
+console.log(enumerableRandonInts.next()); // { value: undefined, done: true }
+console.log(enumerableRandonInts.next()); // { value: undefined, done: true }
 
 console.log('Функция range:');
 

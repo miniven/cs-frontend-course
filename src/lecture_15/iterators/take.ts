@@ -1,4 +1,4 @@
-export const take = <T>(iterable: Iterable<T>, limit: number): IterableIterator<T> => {
+export const take = <T>(iterable: Iterable<T>, limit: number): IterableIterator<T | undefined> => {
 	const iterator = iterable[Symbol.iterator]();
 
 	return {
@@ -6,15 +6,21 @@ export const take = <T>(iterable: Iterable<T>, limit: number): IterableIterator<
 			return this;
 		},
 		next() {
-			const value = iterator.next().value;
-			const result = {
-				value,
-				done: value === undefined || limit <= 0,
-			};
+			const { value, done } = iterator.next();
 
 			limit--;
 
-			return result;
+			if (done || limit < 0) {
+				return {
+					value: undefined,
+					done: true,
+				};
+			}
+
+			return {
+				value,
+				done,
+			};
 		},
 		return() {
 			limit = 0;

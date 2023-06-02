@@ -1,7 +1,13 @@
+enum States {
+	IDLE = 'idle',
+	DONE = 'done',
+}
+
 export const enumerate = <T>(iterable: Iterable<T>): IterableIterator<[number, T]> => {
 	const iterator = iterable[Symbol.iterator]();
 
 	let index = 0;
+	let state = States.IDLE;
 
 	return {
 		[Symbol.iterator]() {
@@ -10,7 +16,7 @@ export const enumerate = <T>(iterable: Iterable<T>): IterableIterator<[number, T
 		next() {
 			const { value, done } = iterator.next();
 
-			if (done) {
+			if (done || state === States.DONE) {
 				return {
 					value: undefined,
 					done: true,
@@ -23,6 +29,8 @@ export const enumerate = <T>(iterable: Iterable<T>): IterableIterator<[number, T
 			};
 		},
 		return() {
+			state = States.DONE;
+
 			return {
 				value: undefined,
 				done: true,
