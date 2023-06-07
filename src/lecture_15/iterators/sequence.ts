@@ -1,4 +1,4 @@
-export const sequence = <T>(iterables: Iterable<Iterable<T>>): IterableIterator<T> => {
+export const sequence = <T>(...iterables: Array<Iterable<T>>): IterableIterator<T> => {
 	const iterablesIterator = iterables[Symbol.iterator]();
 
 	let currentIterator = iterablesIterator.next().value[Symbol.iterator]() as Iterator<T>;

@@ -64,7 +64,7 @@ console.log([...numberRange]); // [1, 0, -1, -2, -3, -4, -5]
 
 console.log('Функция sequence:');
 
-console.log([...sequence([[1, 2], new Set([3, 4]), [5], new Set([6, 7])])]);
+console.log([...sequence([1, 2], new Set([3, 4]), [5], new Set([6, 7]))]);
 
 console.log('Функция zip:');
 
