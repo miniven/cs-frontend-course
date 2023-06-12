@@ -13,9 +13,7 @@ export type Parser<T = unknown, R = unknown> = (
 ) => Generator<ParserToken<T>, ParserResult<R>, Iterable<string> | undefined>;
 
 export const enum ErrorEnum {
-	INVALID = 'invalid',
-	NOT_FOUND = 'not found',
-	NOT_FOUND_NEEDED_AMOUNT = 'not found needed amount',
+	UNEXPECTED = 'unexpected token',
 }
 
 export const enum RegExpErrorEnum {

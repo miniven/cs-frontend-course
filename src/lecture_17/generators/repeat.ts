@@ -35,7 +35,7 @@ export const repeat = (parser: Parser<string, string>, config: ExtendedConfig = 
 		}
 
 		if (resultArr.length < min) {
-			throw new Error(ErrorEnum.NOT_FOUND_NEEDED_AMOUNT);
+			throw new Error(ErrorEnum.UNEXPECTED);
 		}
 
 		const token = createToken(TYPE, resultArr.map((token) => token.value).join(''));

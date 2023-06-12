@@ -109,16 +109,26 @@ const jsonKeyParser = seq(tag('"'), take(/\w/, { token: 'JSON_KEY' }), tag('"'))
 const jsonValueStrParser = seq(tag('"'), take(/\w/, { token: 'JSON_VALUE_STRING' }), tag('"'));
 const jsonValueNumParser = take(/\d/, { token: 'JSON_VALUE_NUMBER' });
 const jsonValueParser = or(jsonValueStrParser, jsonValueNumParser);
+const optionalSpaceParser = opt(take(/\s/));
 
 const jsonParsing = seq(
+	optionalSpaceParser,
 	tag('{'),
-	opt(take(/\s/)),
+	optionalSpaceParser,
 
-	repeat(seq(jsonKeyParser, tag(':'), take(/\s/), jsonValueParser, opt(tag(',')), opt(take(/\s/)))),
+	repeat(seq(jsonKeyParser, tag(':'), optionalSpaceParser, jsonValueParser, tag(','), take(/\s/))),
+	seq(jsonKeyParser, tag(':'), take(/\s/), jsonValueParser),
 
-	opt(take(/\s/)),
-	tag('}')
-)('{ "name": "bob", "age": "30" }');
+	optionalSpaceParser,
+	tag('}'),
+	optionalSpaceParser
+)(`
+{
+	"name": "bob",
+	"age": "30",
+	"city": "LA"
+}
+`);
 
 for (const token of jsonParsing) {
 	console.log(token);

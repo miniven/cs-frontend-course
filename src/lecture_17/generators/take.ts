@@ -47,7 +47,7 @@ export const take = (
 		 * Если итератор закончился, но парсер не набрал нужное число значений
 		 */
 		if (valueArr.length < min) {
-			throw new Error(ErrorEnum.NOT_FOUND);
+			throw new Error(ErrorEnum.UNEXPECTED);
 		}
 
 		const value = valueArr.join('');

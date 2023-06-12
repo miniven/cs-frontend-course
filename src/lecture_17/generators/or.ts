@@ -52,7 +52,7 @@ export function or(
 		}
 
 		if (!token) {
-			throw new Error(config.error ?? ErrorEnum.NOT_FOUND);
+			throw new Error(config.error ?? ErrorEnum.UNEXPECTED);
 		}
 
 		if (config.token) {

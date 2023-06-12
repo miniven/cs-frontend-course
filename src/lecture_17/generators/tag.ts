@@ -39,7 +39,7 @@ export function tag(pattern: Pattern | string, config: CommonConfig = {}): Parse
 			if (!testEntry(char, pattern[pointer])) {
 				buffer.push(char);
 
-				throw new Error(ErrorEnum.NOT_FOUND);
+				throw new Error(ErrorEnum.UNEXPECTED);
 			}
 
 			resultArr.push(char);
@@ -52,7 +52,7 @@ export function tag(pattern: Pattern | string, config: CommonConfig = {}): Parse
 		}
 
 		if (!resultArr.length) {
-			throw new Error(config.error ?? ErrorEnum.NOT_FOUND);
+			throw new Error(config.error ?? ErrorEnum.UNEXPECTED);
 		}
 
 		const result = createToken<string, string>(TYPE, resultArr.join(''));

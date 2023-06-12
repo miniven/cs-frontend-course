@@ -32,13 +32,17 @@ export function seq(
 		let nextIterable = iterable;
 		let resultArr: ParserToken<string>[] = [];
 
+		const tokens = [];
+
 		for (const parser of parsers) {
 			const parsing = parser(nextIterable, resultArr.at(-1));
 			let next = parsing.next();
 
 			while (!next.done) {
-				yield next.value;
-
+				/**
+				 * Коллекционируем токены, чтобы вернуть их только тогда, когда последовательность полностью совпала
+				 */
+				tokens.push(next.value);
 				next = parsing.next();
 			}
 
@@ -47,7 +51,11 @@ export function seq(
 		}
 
 		if (!resultArr.length) {
-			throw new Error(ErrorEnum.NOT_FOUND);
+			throw new Error(ErrorEnum.UNEXPECTED);
+		}
+
+		for (const token of tokens) {
+			yield token;
 		}
 
 		const value = resultArr.map((token) => token.value).join('');
